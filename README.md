@@ -25,7 +25,7 @@ Validation & Business Rules
      ↓
 Transaction Processing
      ↓
-Airtable / Human Escalation
+Documentation / Human Escalation
      ↓
 Structured Response
 ```
