@@ -1,0 +1,2043 @@
+{
+  "name": "AI Voice Restaurant Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "var body = $input.item.json.body || {};\nvar toolCalls = body.message?.toolCallList || [];\n\nvar cleanedToolCalls = [];\n\nfor (var i = 0; i < toolCalls.length; i++) {\n\nvar tool = toolCalls[i];\n\ncleanedToolCalls.push({\nid: tool.id || \"\",\ntype: tool.type || \"\",\nfunction: {\nname: tool.function?.name || \"\",\narg_ment: tool.function?.arguments || {}\n}\n});\n}\n\nreturn [\n{\njson: {\ntoolCallList: cleanedToolCalls,\ntimestamp: new Date().toISOString()\n}\n}\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1424,
+        400
+      ],
+      "id": "34df08b1-1432-4420-bb3c-0bb93b01a023",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8f77c9b3-55c1-4c1f-98aa-c09c7e2398e9",
+              "leftValue": "={{ $json['customer\\'s name'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "e08737cb-cd4f-4d98-a911-14d6c938413f",
+              "leftValue": "={{ $json.toolCallList[0].function.arg_ment.delivery_type }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "780a3d12-b34e-452e-a8cb-b2d540d8ec8c",
+              "leftValue": "={{ $json.toolCallList[0].function.arg_ment.items }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0721ef01-e903-40ab-859e-2d22b3425bd4",
+              "leftValue": "={{ $json['customer\\'s phone number'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -752,
+        400
+      ],
+      "id": "cf9f5756-7012-4918-a833-4884889d4cd4",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -80,
+        240
+      ],
+      "id": "7a054076-7ad7-43e4-bece-79d0b6fb4bc2",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f7738948-6b48-4783-b9d6-f63e3681da81",
+              "leftValue": "={{ $json.allAvailable }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        368,
+        240
+      ],
+      "id": "248df030-d53a-42e8-8eba-ddd64aee5e29",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b643e711-142d-4937-a9cc-bc0a1491fef6",
+              "name": "customer_name",
+              "value": "={{ $json.customer_name }}",
+              "type": "string"
+            },
+            {
+              "id": "51a504ab-df1e-4eef-b06f-cb9a3f53169e",
+              "name": "phone",
+              "value": "={{ $json.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "1c967a8e-bae9-4ba8-addf-4df53cbe4a30",
+              "name": "items_string",
+              "value": "={{ $json.items_string }}",
+              "type": "string"
+            },
+            {
+              "id": "2c8fddc7-bef0-4e59-88e9-474dfdd74d23",
+              "name": "delivery_type",
+              "value": "={{ $json.delivery_type }}",
+              "type": "string"
+            },
+            {
+              "id": "09ae0e89-26de-44fb-871e-ae4785619f0b",
+              "name": "totalCost",
+              "value": "={{ $json.totalCost }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        240
+      ],
+      "id": "d2cb5e9a-dd31-4aa9-ae79-a7ed0f0d42a2",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "781ba446-32cd-4b30-93ce-b50c86c77ab1",
+              "leftValue": "={{ $('If').item.json.toolCallList[0].function.arg_ment.delivery_type }}",
+              "rightValue": "pickup",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -528,
+        400
+      ],
+      "id": "c043f855-24bf-423b-805e-56016ed2d7cc",
+      "name": "Delivery type is pickup"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f7738948-6b48-4783-b9d6-f63e3681da81",
+              "leftValue": "={{$json.all_items_available}}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "b0b73092-901d-4a7d-ae1a-bae12a1c5595",
+              "leftValue": "={{ $json.zone_found }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": "={{ false }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        384,
+        496
+      ],
+      "id": "053005f0-1126-48f5-b62f-c27bd4db05eb",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b643e711-142d-4937-a9cc-bc0a1491fef6",
+              "name": "customer_name",
+              "value": "={{ $json.customer_name }}",
+              "type": "string"
+            },
+            {
+              "id": "51a504ab-df1e-4eef-b06f-cb9a3f53169e",
+              "name": "phone",
+              "value": "={{ $json.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "1c967a8e-bae9-4ba8-addf-4df53cbe4a30",
+              "name": "items_string",
+              "value": "={{ $json.items_string }}",
+              "type": "string"
+            },
+            {
+              "id": "2c8fddc7-bef0-4e59-88e9-474dfdd74d23",
+              "name": "delivery_type",
+              "value": "={{ $json.delivery_type }}",
+              "type": "string"
+            },
+            {
+              "id": "09ae0e89-26de-44fb-871e-ae4785619f0b",
+              "name": "grand_total",
+              "value": "={{ $json.grand_total }}",
+              "type": "number"
+            },
+            {
+              "id": "aba1f494-41ff-4487-adf8-89bd4c04a318",
+              "name": "delivery_address",
+              "value": "={{ $json.delivery_address }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        480
+      ],
+      "id": "8850c5c6-e2a1-45cc-ba14-fb1788aabf28",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -64,
+        480
+      ],
+      "id": "9346d288-3df9-4df4-86b0-cffb63865348",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1264,
+        352
+      ],
+      "id": "c49e9026-85f0-4be7-b153-6fd5e6fd1048",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a047571-5d49-463f-a702-185f82ffe067",
+              "name": "Status",
+              "value": "Success",
+              "type": "string"
+            },
+            {
+              "id": "bc38f479-d658-4c59-b37e-5d032884d8e7",
+              "name": "Message",
+              "value": "Your Order has been recorded",
+              "type": "string"
+            },
+            {
+              "id": "e09d7e6b-f773-4823-bd8e-33a9a2df08a0",
+              "name": "Name",
+              "value": "<CUSTOMER_NAME>",
+              "type": "string"
+            },
+            {
+              "id": "ac056893-0d93-4db2-86eb-f0f3ed236acd",
+              "name": "Phone number",
+              "value": "<CUSTOMER_PHONE>",
+              "type": "string"
+            },
+            {
+              "id": "710b5611-cf70-4f6b-8cf6-866131d90df4",
+              "name": "Type",
+              "value": "Pickup",
+              "type": "string"
+            },
+            {
+              "id": "bb8e86ea-62f3-460c-903c-7700bec1f80c",
+              "name": "toolCallId",
+              "value": "={{ $('Get vapi input ').item.json.body.message.toolCalls[0].id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        240
+      ],
+      "id": "46482978-0599-490e-b0a2-47415fbbc032",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a047571-5d49-463f-a702-185f82ffe067",
+              "name": "Status",
+              "value": "Success",
+              "type": "string"
+            },
+            {
+              "id": "bc38f479-d658-4c59-b37e-5d032884d8e7",
+              "name": "Message",
+              "value": "your order has been recorded",
+              "type": "string"
+            },
+            {
+              "id": "e09d7e6b-f773-4823-bd8e-33a9a2df08a0",
+              "name": "Name",
+              "value": "<CUSTOMER_NAME>",
+              "type": "string"
+            },
+            {
+              "id": "ac056893-0d93-4db2-86eb-f0f3ed236acd",
+              "name": "Phone number",
+              "value": "<CUSTOMER_PHONE>",
+              "type": "string"
+            },
+            {
+              "id": "710b5611-cf70-4f6b-8cf6-866131d90df4",
+              "name": "Type",
+              "value": "Delivery",
+              "type": "string"
+            },
+            {
+              "id": "5e5206b9-acad-4137-9da6-b20262e651c1",
+              "name": "toolCallId",
+              "value": "={{ $('Get required data only').item.json.toolCallId.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        480
+      ],
+      "id": "f5be58da-0aca-4fbf-bf51-b5f3e1779948",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a047571-5d49-463f-a702-185f82ffe067",
+              "name": "Status",
+              "value": "Success",
+              "type": "string"
+            },
+            {
+              "id": "bc38f479-d658-4c59-b37e-5d032884d8e7",
+              "name": "Message",
+              "value": "Your reservation has been completed",
+              "type": "string"
+            },
+            {
+              "id": "e09d7e6b-f773-4823-bd8e-33a9a2df08a0",
+              "name": "Name",
+              "value": "={{ $json['customer\\'s name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ac056893-0d93-4db2-86eb-f0f3ed236acd",
+              "name": "=Phone number",
+              "value": "={{ $json['customer\\'s phone number'] }}",
+              "type": "string"
+            },
+            {
+              "id": "710b5611-cf70-4f6b-8cf6-866131d90df4",
+              "name": "Type",
+              "value": "Reservation",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        912
+      ],
+      "id": "5f457625-ef99-4a43-931e-eb7851cb22cc",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a047571-5d49-463f-a702-185f82ffe067",
+              "name": "Status",
+              "value": "Success",
+              "type": "string"
+            },
+            {
+              "id": "bc38f479-d658-4c59-b37e-5d032884d8e7",
+              "name": "Message",
+              "value": "Your Order has been recorded",
+              "type": "string"
+            },
+            {
+              "id": "e09d7e6b-f773-4823-bd8e-33a9a2df08a0",
+              "name": "Name",
+              "value": "<CUSTOMER_NAME>",
+              "type": "string"
+            },
+            {
+              "id": "ac056893-0d93-4db2-86eb-f0f3ed236acd",
+              "name": "Phone number",
+              "value": "<CUSTOMER_PHONE>",
+              "type": "string"
+            },
+            {
+              "id": "710b5611-cf70-4f6b-8cf6-866131d90df4",
+              "name": "Type",
+              "value": "Pickup",
+              "type": "string"
+            },
+            {
+              "id": "4b880ac9-58ce-4a04-9554-337721c28fb3",
+              "name": "toolCallId",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "0e54fb71-16c2-47c3-be3f-d00ff32b8cf0",
+              "name": "toolCallId",
+              "value": "={{ $('Get vapi input ').item.json.body.message.toolCalls[0].id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        -96
+      ],
+      "id": "d0aa3dec-a865-4dc1-9de3-27dd1d72c3ee",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c4024bd5-7248-464a-acbd-ac9bba53c908",
+              "name": "customer's name",
+              "value": "={{ $json['customer\\'s name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7bb11cc2-488e-4440-914f-69c1cda96795",
+              "name": "event",
+              "value": "={{ $json.event }}",
+              "type": "string"
+            },
+            {
+              "id": "3de9a579-8a50-4c6d-b192-167e7c445fb2",
+              "name": "customer's phone number",
+              "value": "={{ $json['customer\\'s phone number'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1f48df39-e6cb-40a9-9563-297e81c5d6dd",
+              "name": "Number of guests",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.guest_count }}",
+              "type": "number"
+            },
+            {
+              "id": "98673a2a-4124-4383-b7b1-db2c3e14524c",
+              "name": "Reservation date",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.reservation_date }}",
+              "type": "string"
+            },
+            {
+              "id": "be6da170-8084-4f9a-b346-11fdaa4fbfbd",
+              "name": "Reservation time",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.reservation_time }}",
+              "type": "string"
+            },
+            {
+              "id": "97b829d2-8a38-421c-8f8e-2ac01ef15602",
+              "name": "Date of entry",
+              "value": "={{ $json.Date }}",
+              "type": "string"
+            },
+            {
+              "id": "e51510ff-eead-4460-bb51-ae4b2fd01817",
+              "name": "Time of Entry",
+              "value": "={{ $json.time }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -304,
+        912
+      ],
+      "id": "1a958d01-7f10-4ce9-977e-44dded35f924",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "73e67ee0-f26f-4f2e-b694-83ba9b2bf806",
+              "name": "customer's name",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.customer_name }}",
+              "type": "string"
+            },
+            {
+              "id": "586aa9c2-9681-4f4c-9822-b32794982a53",
+              "name": "event type",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.reason }}",
+              "type": "string"
+            },
+            {
+              "id": "65d8231e-2af8-42a2-8299-74ee30364196",
+              "name": "Event summary",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "1220cd43-cbac-40af-9a36-999f2587a1f1",
+              "name": "toolCallList[0].function.arg_ment.priority",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.priority }}",
+              "type": "string"
+            },
+            {
+              "id": "f31fd776-3cba-489e-921d-c46dceddce57",
+              "name": "event",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.event }}",
+              "type": "string"
+            },
+            {
+              "id": "cbad2c55-3f10-4868-87b4-a12e44b329d6",
+              "name": "time",
+              "value": "={{\nnew Date($json.timestamp).toLocaleTimeString('en-US', {\ntimeZone: 'Africa/Lagos',\nhour: 'numeric',\nminute: '2-digit',\nhour12: true\n})\n}}\n",
+              "type": "string"
+            },
+            {
+              "id": "03efab33-1a25-46a4-a2a5-c377ff2d362a",
+              "name": "Date",
+              "value": "={{ $json.timestamp.split(\"T\")[[0]] }}",
+              "type": "string"
+            },
+            {
+              "id": "36252869-039e-4e47-b26e-234f94dbd721",
+              "name": "customer's phone number",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "c99d67ba-8b22-4ad0-a8d8-13b8a4a0a245",
+              "name": "toolCallList[0].function.arg_ment.delivery_type",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.delivery_type }}",
+              "type": "string"
+            },
+            {
+              "id": "5d0df813-ce5c-4bd4-9f6c-928b4cc5cfdb",
+              "name": "toolCallList[0].function.arg_ment.items",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.items }}",
+              "type": "array"
+            },
+            {
+              "id": "e9aba521-55d0-4f04-9d91-355f012bcfe0",
+              "name": "toolCallList[0].function.arg_ment.guest_count",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.guest_count }}",
+              "type": "number"
+            },
+            {
+              "id": "1037f724-ed9a-4d99-a24b-092aeae3d350",
+              "name": "toolCallList[0].function.arg_ment.reservation_date",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.reservation_date }}",
+              "type": "string"
+            },
+            {
+              "id": "ebc1e999-ba25-41da-b0a0-2e3c4b09e5dc",
+              "name": "toolCallList[0].function.arg_ment.reservation_time",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.reservation_time }}",
+              "type": "string"
+            },
+            {
+              "id": "965dabc1-42f2-4540-ae0d-13c4b8aff5e7",
+              "name": "toolCallList[0].function.arg_ment.delivery_address",
+              "value": "={{ $json.toolCallList[0].function.arg_ment.delivery_address }}",
+              "type": "string"
+            },
+            {
+              "id": "61a94ef2-95a1-4075-ad86-2c8618d5924e",
+              "name": "toolCallId",
+              "value": "={{ $json.toolCallList[0] }}",
+              "type": "object"
+            }
+          ]
+        },
+        "includeOtherFields": "={{ false }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1200,
+        400
+      ],
+      "id": "afad6349-fe3a-4687-969c-a0765e8dd87e",
+      "name": "Get required data only"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "<AIRTABLE_BASE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_BASE>",
+          "cachedResultUrl": "<AIRTABLE_BASE_URL>"
+        },
+        "table": {
+          "__rl": true,
+          "value": "<AIRTABLE_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_TABLE>",
+          "cachedResultUrl": "<AIRTABLE_TABLE_URL>"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -288,
+        512
+      ],
+      "id": "405ee761-d86e-460c-8252-e0483661bc79",
+      "name": "Search for menu"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "<AIRTABLE_BASE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_BASE>",
+          "cachedResultUrl": "<AIRTABLE_BASE_URL>"
+        },
+        "table": {
+          "__rl": true,
+          "value": "<AIRTABLE_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_TABLE>",
+          "cachedResultUrl": "<AIRTABLE_TABLE_URL>"
+        },
+        "returnAll": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -304,
+        752
+      ],
+      "id": "fce5fe3e-7e8f-4a4a-bd5d-24eedaa758b1",
+      "name": "search for delivery zones"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "<AIRTABLE_BASE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_BASE>",
+          "cachedResultUrl": "<AIRTABLE_BASE_URL>"
+        },
+        "table": {
+          "__rl": true,
+          "value": "<AIRTABLE_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_TABLE>",
+          "cachedResultUrl": "<AIRTABLE_TABLE_URL>"
+        },
+        "filterByFormula": "Item",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -304,
+        192
+      ],
+      "id": "5d921b94-78a6-4d8e-a233-2ec9f640ffa3",
+      "name": "search for menu"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "<WEBHOOK_PATH>",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1648,
+        400
+      ],
+      "id": "81a8cc36-541a-4121-93d8-79fd75775c61",
+      "name": "Get vapi input ",
+      "webhookId": "207631ae-30d6-4e18-9679-1a74b589c486"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "escalate_to_human",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f8407656-82ce-4027-afa2-50fea5e542af"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "escalate "
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "372dfe53-85aa-4fb6-896a-6eba911e3e9e",
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "create_order",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "order"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4d2e83c4-cfa6-47b1-a185-3ce22fa1eb8d",
+                    "leftValue": "={{ $json.event }}",
+                    "rightValue": "create_reservation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reservation"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1008,
+        384
+      ],
+      "id": "7a810182-069f-48c5-8525-ab5aaf5a9314",
+      "name": "Route based on input"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allInput = $input.all();\nconst vapiData = allInput.find(r => r.json.toolCallList);\nconst vapiItems = vapiData.json.toolCallList[0].function.arg_ment.items;\nconst deliveryType = vapiData.json.toolCallList[0].function.arg_ment.delivery_type;\nconst deliveryAddress = vapiData.json.toolCallList[0].function.arg_ment.delivery_address || null;\nconst deliveryZones = allInput.filter(r => r.json.fields && r.json.fields[\"Delivery zones\"]).map(r => r.json.fields);\nconst menuRecords = allInput.filter(r => r.json.fields && r.json.fields.Item && r.json.fields.Item !== \"Item\").map(r => r.json.fields);\n\nconst normalize = (str) => str.toLowerCase().replace(/\\b(and|with|the|in|of|a|an)\\b/g, \"\").replace(/[^a-z0-9 ]/g, \"\").replace(/\\s+/g, \" \").trim();\n\nconst getMatchScore = (str1, str2) => {\n  const words1 = normalize(str1).split(\" \").filter(w => w.length > 2);\n  const words2 = normalize(str2).split(\" \").filter(w => w.length > 2);\n  return words1.filter(word => words2.some(w => w === word)).length;\n};\n\nconst availableItems = [];\nconst notFound = [];\n\nvapiItems.forEach(vapiItem => {\n  const { name, size, quantity } = vapiItem;\n  const scored = menuRecords.map(record => ({ record, score: getMatchScore(name, record.Item) }));\n  const bestMatch = scored.sort((a, b) => b.score - a.score)[0];\n  if (bestMatch && bestMatch.score > 0) {\n    const unit_price = Number(bestMatch.record[\"Unit price\"]);\n    availableItems.push({\n      ordered_name: name,\n      matched_name: bestMatch.record.Item,\n      availability: bestMatch.record.Availability,\n      size,\n      quantity,\n      unit_price,\n      item_total: quantity * unit_price\n    });\n  } else {\n    notFound.push(name);\n  }\n});\n\nconst confirmedItems = availableItems.filter(i => i.availability.toLowerCase() === \"available\");\nconst unavailableItems = availableItems.filter(i => i.availability.toLowerCase() !== \"available\");\nconst foodTotal = confirmedItems.reduce((sum, i) => sum + i.item_total, 0);\nconst vapiTotal = vapiItems.reduce((sum, i) => sum + i.item_total, 0);\nconst totalsMatch = foodTotal === vapiItems.reduce((sum, i) => sum + (i.unit_price * i.quantity), 0);\n\nlet deliveryFee = 0;\nlet matchedZone = null;\nlet deliveryFeeFound = false;\n\nif (deliveryType === \"delivery\" && deliveryAddress) {\n  const addressNormalized = deliveryAddress.toLowerCase();\n  const zoneMatch = deliveryZones.find(zone => {\n    const zones = zone[\"Delivery zones\"].toLowerCase().split(\",\").map(z => z.trim());\n    return zones.some(z => addressNormalized.includes(z) || z.includes(addressNormalized));\n  });\n  if (zoneMatch) {\n    deliveryFee = Number(zoneMatch[\"Delivery fee\"]);\n    matchedZone = zoneMatch[\"Delivery zones\"];\n    deliveryFeeFound = true;\n  }\n}\n\nconst grandTotal = foodTotal + deliveryFee;\n\nlet itemsString = \"No items confirmed\";\nif (confirmedItems.length === 1) {\n  itemsString = confirmedItems[0].quantity + \" \" + confirmedItems[0].size + \" portion of \" + confirmedItems[0].ordered_name;\n} else if (confirmedItems.length > 1) {\n  const allButLast = confirmedItems.slice(0, -1).map(i => i.quantity + \" \" + i.size + \" portion of \" + i.ordered_name).join(\", \");\n  const last = confirmedItems[confirmedItems.length - 1];\n  itemsString = allButLast + \" and \" + last.quantity + \" \" + last.size + \" portion of \" + last.ordered_name;\n}\n\nconst orderBreakdown = confirmedItems.map(i => i.ordered_name + \" x\" + i.quantity + \" @ N\" + i.unit_price + \" = N\" + i.item_total);\norderBreakdown.push(deliveryType === \"delivery\" ? \"Delivery fee (\" + (matchedZone || \"zone not found\") + \"): N\" + deliveryFee : \"Pickup - no delivery fee\");\norderBreakdown.push(\"Grand Total: N\" + grandTotal);\n\nconst messageparts = [];\nif (unavailableItems.length > 0) messageparts.push(\"Currently unavailable: \" + unavailableItems.map(i => i.ordered_name).join(\", \"));\nif (notFound.length > 0) messageparts.push(\"Not found on menu: \" + notFound.map(i => i).join(\", \"));\nif (deliveryType === \"delivery\" && !deliveryFeeFound) messageparts.push(\"Warning: delivery address not found in any zone. Please confirm the address.\");\nconst message = messageparts.length > 0 ? messageparts.join(\". \") : \"All items are available.\";\n\nconst discrepancy = !totalsMatch\n  ? { detected: true, vapi_sent: vapiTotal, recalculated: foodTotal, difference: foodTotal - vapiTotal, message: \"Warning: Vapi total (N\" + vapiTotal + \") differs from recalculated total (N\" + foodTotal + \"). Difference of N\" + (foodTotal - vapiTotal) + \".\" }\n  : { detected: false };\n\nreturn [{\n  json: {\n    customer_name: vapiData.json[\"customer's name\"],\n    phone: vapiData.json[\"customer's phone number\"],\n    delivery_type: deliveryType,\n    delivery_address: deliveryAddress,\n    matched_zone: matchedZone,\n    delivery_fee: deliveryFee,\n    zone_found: deliveryFeeFound,\n    all_items_available: unavailableItems.length === 0 && notFound.length === 0,\n    confirmedItems,\n    unavailableItems,\n    notFound,\n    food_total: foodTotal,\n    grand_total: grandTotal,\n    vapi_total: vapiTotal,\n    totals_verified: totalsMatch,\n    discrepancy,\n    items_string: itemsString,\n    order_breakdown: orderBreakdown,\n    message\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        496
+      ],
+      "id": "425e98d8-f740-49ac-a6c9-c7da8f18ab39",
+      "name": "Validate delivery zone"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allInput = $input.all();\n\nconst vapiData = allInput.find(r => r.json.toolCallList);\nconst vapiItems = vapiData.json.toolCallList[0].function.arg_ment.items;\n\nconst menuRecords = allInput\n  .filter(r => r.json.fields)\n  .map(r => r.json.fields);\n\nconst normalize = (str) => {\n  return str\n    .toLowerCase()\n    .replace(/\\b(and|with|the|in|of|a|an)\\b/g, \"\")\n    .replace(/[^a-z0-9 ]/g, \"\")\n    .replace(/\\s+/g, \" \")\n    .trim();\n};\n\nconst getMatchScore = (str1, str2) => {\n  const words1 = normalize(str1).split(\" \");\n  const words2 = normalize(str2).split(\" \");\n  return words1.filter(word => words2.includes(word)).length;\n};\n\nconst availableItems = [];\nconst notFound = [];\n\nvapiItems.forEach(vapiItem => {\n  const { name, size, quantity, unit_price, item_total } = vapiItem;\n\n  const scored = menuRecords.map(record => ({\n    record,\n    score: getMatchScore(name, record.Item)\n  }));\n\n  const bestMatch = scored.sort((a, b) => b.score - a.score)[0];\n\n  if (bestMatch && bestMatch.score > 0) {\n    availableItems.push({\n      ordered_name: name,\n      matched_name: bestMatch.record.Item,\n      availability: bestMatch.record.Availability,\n      size,\n      quantity,\n      unit_price,\n      item_total: quantity * unit_price\n    });\n  } else {\n    notFound.push(name);\n  }\n});\n\nconst confirmedItems = availableItems.filter(i => i.availability.toLowerCase() === \"available\");\nconst unavailableItems = availableItems.filter(i => i.availability.toLowerCase() !== \"available\");\n\nconst totalFromItemTotals = confirmedItems.reduce((sum, i) => sum + i.item_total, 0);\nconst totalFromUnitPrices = confirmedItems.reduce((sum, i) => sum + (i.unit_price * i.quantity), 0);\nconst vapiTotal = vapiItems.reduce((sum, i) => sum + i.item_total, 0);\nconst totalsMatch = totalFromItemTotals === totalFromUnitPrices && totalFromItemTotals === vapiTotal;\n\nconst itemsString = confirmedItems.length === 1\n  ? `${confirmedItems[0].quantity} ${confirmedItems[0].size} portion of ${confirmedItems[0].ordered_name}`\n  : confirmedItems.slice(0, -1).map(i => `${i.quantity} ${i.size} portion of ${i.ordered_name}`).join(\", \")\n    + \" and \" + `${confirmedItems[confirmedItems.length - 1].quantity} ${confirmedItems[confirmedItems.length - 1].size} portion of ${confirmedItems[confirmedItems.length - 1].ordered_name}`;\n\nreturn [{\n  json: {\n    customer_name: vapiData.json[\"customer's name\"],\n    phone: vapiData.json[\"customer's phone number\"],\n    delivery_type: vapiData.json.toolCallList[0].function.arg_ment.delivery_type,\n    confirmedItems,\n    unavailableItems,\n    notFound,\n    totalCost: totalFromItemTotals,\n    vapi_total: vapiTotal,\n    totals_verified: totalsMatch,\n    discrepancy: !totalsMatch ? {\n      detected: true,\n      vapi_sent: vapiTotal,\n      recalculated: totalFromItemTotals,\n      difference: totalFromItemTotals - vapiTotal,\n      message: `Warning: Vapi total (₦${vapiTotal}) differs from recalculated total (₦${totalFromItemTotals}). Difference of ₦${totalFromItemTotals - vapiTotal}.`\n    } : { detected: false },\n    items_string: itemsString,\n    order_breakdown: confirmedItems.map(i => `${i.ordered_name} x${i.quantity} @ ₦${i.unit_price} = ₦${i.item_total}`),\n    allAvailable: unavailableItems.length === 0 && notFound.length === 0,\n    message: [\n      unavailableItems.length > 0 ? `Currently unavailable: ${unavailableItems.map(i => i.ordered_name).join(\", \")}` : null,\n      notFound.length > 0 ? `Not found on menu: ${notFound.map(i => i).join(\", \")}` : null\n    ].filter(Boolean).join(\". \") || \"All items are available.\"\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        144,
+        240
+      ],
+      "id": "331f56af-806c-44b4-b6be-c18edecbf10b",
+      "name": "Validate menu availability"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\n// Extract fields safely\nconst customerName = input[\"customer's name\"] || \"Unknown Customer\";\nconst phone = input[\"customer's phone number\"] || \"Not provided\";\nconst eventType = input[\"event type\"] || \"Not specified\";\nconst eventSummary = input[\"Event summary\"] || \"No summary provided\";\nconst date = input[\"Date\"] || \"Unknown date\";\nconst time = (input[\"time\"] || \"\").trim() || \"Unknown time\";\n\n// Extract from toolCallList safely\nconst toolCall = input.toolCallList && input.toolCallList[0];\nconst args = toolCall ? toolCall.function.arg_ment : {};\nconst priority = args.priority || \"medium\";\nconst deliveryType = args.delivery_type || \"Not specified\";\nconst items = args.items || [];\n\n// Priority emoji and label\nconst priorityEmoji = { high: \"🔴\", medium: \"🟡\", low: \"🟢\" };\nconst priorityLabel = { high: \"High\", medium: \"Medium\", low: \"Low\" };\nconst emoji = priorityEmoji[priority] || \"🟡\";\n\n// Build items summary if available\nconst itemsSummary = items.length > 0\n  ? items.map(i => i.quantity + \"x \" + i.name + \" (\" + i.size + \") @ N\" + i.unit_price).join(\", \")\n  : \"No items captured\";\n\n// Build HTML notification message\nconst notificationMessage = [\n  \"🚨 <b>New Escalation Alert</b>\",\n  \"━━━━━━━━━━━━━━\",\n  \"\",\n  \"👤 <b>Customer Details</b>\",\n  \"• <b>Name:</b> \" + customerName,\n  \"• <b>Phone:</b> \" + phone,\n  \"\",\n  \"📅 <b>Date and Time</b>\",\n  \"• \" + date + \" at \" + time,\n  \"\",\n  \"🚦 <b>Priority:</b> \" + emoji + \" \" + priorityLabel[priority],\n  \"\",\n  \"⚠️ <b>Issue</b>\",\n  eventSummary,\n  \"\",\n  \"🛒 <b>Order Details</b>\",\n  \"• <b>Delivery Type:</b> \" + deliveryType,\n  \"• <b>Items:</b> \" + itemsSummary,\n  \"\",\n  \"━━━━━━━━━━━━━━\",\n  \"📞 Please call <b>\" + customerName + \"</b> on <b>\" + phone + \"</b> as soon as possible to resolve this.\"\n].join(\"\\n\");\n\nreturn [{\n  json: {\n    customer_name: customerName,\n    phone,\n    date,\n    time,\n    priority,\n    priority_emoji: emoji,\n    escalation_reason: eventType,\n    escalation_summary: eventSummary,\n    delivery_type: deliveryType,\n    items_captured: itemsSummary,\n    notification_message: notificationMessage,\n    has_order_context: items.length > 0,\n    requires_callback: true\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        144,
+        -144
+      ],
+      "id": "56ad67eb-1c52-45c6-8a9f-d6e0a049fa60",
+      "name": "Create structured output from escalated message"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "<AIRTABLE_BASE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_BASE>",
+          "cachedResultUrl": "<AIRTABLE_BASE_URL>"
+        },
+        "table": {
+          "__rl": true,
+          "value": "<AIRTABLE_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_TABLE>",
+          "cachedResultUrl": "<AIRTABLE_TABLE_URL>"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Has Order Context": "={{$json.has_order_context}}",
+            "Requires Callback": "={{ $json.requires_callback }}",
+            "Customer Name": "={{ $json.customer_name }}",
+            "Phone": "={{ $json.phone }}",
+            "Date": "={{ $now.format('yyyy-MM-dd') }}",
+            "Time": "={{ $now.toISO().split(\"T\")[[1]].split(\".\")[0]}}",
+            "Priority": "={{ $json.priority.charAt(0).toUpperCase() + $json.priority.slice(1) }}",
+            "Escalation Reason": "={{ $json.escalation_reason }}",
+            "Escalation Summary": "={{ $json.escalation_summary }}",
+            "Items Ordered": "={{ $json.items_captured }}",
+            "Status": "New",
+            "Type": "={{ $json.delivery_type }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Low",
+                  "value": "Low"
+                },
+                {
+                  "name": "Medium",
+                  "value": "Medium"
+                },
+                {
+                  "name": "High",
+                  "value": "High"
+                },
+                {
+                  "name": "Urgent",
+                  "value": "Urgent"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Escalation Reason",
+              "displayName": "Escalation Reason",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Escalation Summary",
+              "displayName": "Escalation Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Items Ordered",
+              "displayName": "Items Ordered",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Has Order Context",
+              "displayName": "Has Order Context",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Requires Callback",
+              "displayName": "Requires Callback",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "New",
+                  "value": "New"
+                },
+                {
+                  "name": "In Review",
+                  "value": "In Review"
+                },
+                {
+                  "name": "Escalated",
+                  "value": "Escalated"
+                },
+                {
+                  "name": "Resolved",
+                  "value": "Resolved"
+                },
+                {
+                  "name": "Closed",
+                  "value": "Closed"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        -176
+      ],
+      "id": "8590beba-c3a3-444d-a43d-ec340ec78bc9",
+      "name": "Log escalation in Airtable"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"results\": [\n    {\n      \"toolCallId\": \"{{ $json.toolCallId }}\",\n      \"result\": {\n        \"status\": \"{{ $json.Status }}\",\n        \"type\": \"{{ $json.Type }}\",\n        \"message\": \"{{ $json.Message }}\",\n        \"customer_name\": \"{{ $json.Name }}\",\n        \"customer_number\": \"{{ $json['Phone number'] }}\"\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1424,
+        384
+      ],
+      "id": "de7641f0-9558-48fb-aa26-073fdf342f6d",
+      "name": "Send structured response to vapi"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "<AIRTABLE_BASE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_BASE>",
+          "cachedResultUrl": "<AIRTABLE_BASE_URL>"
+        },
+        "table": {
+          "__rl": true,
+          "value": "<AIRTABLE_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_TABLE>",
+          "cachedResultUrl": "<AIRTABLE_TABLE_URL>"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Customer Name": "={{ $json['customer\\'s name'] }}",
+            "Phone": "={{ $json['customer\\'s phone number'] }}",
+            "Number of Guests": "={{ $json['Number of guests'] }}",
+            "Reservation Date": "={{ $json['Reservation date'] }}",
+            "Reservation Time": "={{ $json['Reservation time'] }}",
+            "Date of Entry": "={{ $json['Date of entry'] }}",
+            "Time of Entry": "={{ $json['Time of Entry'] }}",
+            "Status": "Pending"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Number of Guests",
+              "displayName": "Number of Guests",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Reservation Date",
+              "displayName": "Reservation Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Reservation Time",
+              "displayName": "Reservation Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date of Entry",
+              "displayName": "Date of Entry",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Time of Entry",
+              "displayName": "Time of Entry",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pending",
+                  "value": "Pending"
+                },
+                {
+                  "name": "Confirmed",
+                  "value": "Confirmed"
+                },
+                {
+                  "name": "Cancelled",
+                  "value": "Cancelled"
+                },
+                {
+                  "name": "Seated",
+                  "value": "Seated"
+                },
+                {
+                  "name": "No Show",
+                  "value": "No Show"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Special Requests",
+              "displayName": "Special Requests",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        912
+      ],
+      "id": "1698edc7-56f9-4be5-b5bf-884f80009eb6",
+      "name": "Log reservation in Airtable"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "<AIRTABLE_BASE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_BASE>",
+          "cachedResultUrl": "<AIRTABLE_BASE_URL>"
+        },
+        "table": {
+          "__rl": true,
+          "value": "<AIRTABLE_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_TABLE>",
+          "cachedResultUrl": "<AIRTABLE_TABLE_URL>"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Customer's Name": "={{ $json.customer_name }}",
+            "Item/Items": "={{ $json.items_string }}",
+            "Phone number": "={{ $json.phone }}",
+            "Amount (Naira)": "={{ $json.grand_total }}",
+            "Status": "Todo",
+            "Delivery address": "={{ $json.delivery_address }}",
+            "Time": "={{ DateTime.now().toFormat('hh:mm a') }}",
+            "Date": "={{ DateTime.now().toFormat('yyyy-MM-dd') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Customer's Name",
+              "displayName": "Customer's Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Item/Items",
+              "displayName": "Item/Items",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone number",
+              "displayName": "Phone number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Amount (Naira)",
+              "displayName": "Amount (Naira)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Delivery address",
+              "displayName": "Delivery address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        480
+      ],
+      "id": "f6f8ddc8-db61-4d0c-a6f8-92c2234990b2",
+      "name": "Log order in Airtable"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "<AIRTABLE_BASE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_BASE>",
+          "cachedResultUrl": "<AIRTABLE_BASE_URL>"
+        },
+        "table": {
+          "__rl": true,
+          "value": "<AIRTABLE_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "<AIRTABLE_TABLE>",
+          "cachedResultUrl": "<AIRTABLE_TABLE_URL>"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Customer's Name": "={{ $json.customer_name }}",
+            "Phone number": "={{ $json.phone }}",
+            "Status": "In progress",
+            "Date": "={{ $today.format('MMM,d,y')}}",
+            "Item/Items": "={{ $json.items_string }}",
+            "Time": "={{ $now.toUTC().toFormat('HH:mm') }}",
+            "Total Amount (Naira)": "={{ $json.totalCost }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Customer's Name",
+              "displayName": "Customer's Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Item/Items",
+              "displayName": "Item/Items",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone number",
+              "displayName": "Phone number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Total Amount (Naira)",
+              "displayName": "Total Amount (Naira)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        240
+      ],
+      "id": "02115f56-6482-4af3-8178-cecbb7020c39",
+      "name": "Log order in Airtable1"
+    },
+    {
+      "parameters": {
+        "chatId": "<TELEGRAM_CHAT_ID>",
+        "text": "=╔══════════════════╗\n🚨 <b>ESCALATION ALERT</b>\n╚══════════════════╝\n\n{{ $json.priority_emoji }} <b>Priority Level:</b> {{ $json.priority }}\n\n━━━━━━━━━━━━━━━━━━\n👤 <b>CUSTOMER DETAILS</b>\n\n<b>Name:</b> {{ $json.customer_name }}\n<b>Phone:</b> {{ $json.phone }}\n\n━━━━━━━━━━━━━━━━━━\n📅 <b>DATE & TIME</b>\n\n{{ $json.date }} • {{ $json.time }}\n\n━━━━━━━━━━━━━━━━━━\n⚠️ <b>ESCALATION REASON</b>\n\n{{ $json.escalation_reason }}\n\n━━━━━━━━━━━━━━━━━━\n📝 <b>CUSTOMER SUMMARY</b>\n\n{{ $json.escalation_summary }}\n\n━━━━━━━━━━━━━━━━━━\n🛒 <b>ORDER CONTEXT</b>\n\n<b>Delivery Type:</b>\n{{ $json.delivery_type }}\n\n<b>Items Ordered:</b>\n{{ $json.items_captured }}\n\n━━━━━━━━━━━━━━━━━━\n⚡ <b>ACTION REQUIRED</b>\n\nPlease contact the customer immediately for resolution and follow-up.\n\n☎️ Callback Required: <b>YES</b>",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        816,
+        16
+      ],
+      "id": "a8faa9b7-0c5f-4987-b9c1-51944ba084a6",
+      "name": "Notify client on telegram",
+      "webhookId": "feb888c9-5871-4275-948e-492215f7cf88",
+      "credentials": {
+        "telegramApi": {
+          "id": "4MWaS3oC8fzzcjyM",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Get required data only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Delivery type is pickup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Validate menu availability",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Log order in Airtable1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delivery type is pickup": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "search for menu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search for menu",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "search for delivery zones",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Log order in Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Validate delivery zone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Send structured response to vapi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Log reservation in Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get required data only": {
+      "main": [
+        [
+          {
+            "node": "Route based on input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for menu": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "search for delivery zones": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "search for menu": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get vapi input ": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route based on input": {
+      "main": [
+        [
+          {
+            "node": "Create structured output from escalated message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate delivery zone": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate menu availability": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create structured output from escalated message": {
+      "main": [
+        [
+          {
+            "node": "Notify client on telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log escalation in Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log escalation in Airtable": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log reservation in Airtable": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log order in Airtable": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log order in Airtable1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify client on telegram": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "443cde68-402a-42ee-900c-3bb225586dfa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "22dfcc843806493133607f5b5dfc272fa711912d52f657640ddcd866961c6aea"
+  },
+  "nodeGroups": [],
+  "id": "HXgWcJ1u41SYgy87",
+  "tags": []
+}
